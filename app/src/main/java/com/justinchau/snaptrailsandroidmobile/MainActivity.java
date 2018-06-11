@@ -1,7 +1,10 @@
 package com.justinchau.snaptrailsandroidmobile;
 
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.content.Intent;
 import android.content.res.Resources;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -33,7 +36,7 @@ import okhttp3.Request;
 import okhttp3.Response;
 
 public class MainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener {
+        implements NavigationView.OnNavigationItemSelectedListener, FeedFragment.OnFragmentInteractionListener {
 
     private static final String TAG = "MainActivity";
     private RecyclerView mRecyclerView;
@@ -51,6 +54,20 @@ public class MainActivity extends AppCompatActivity
         mToolbar = findViewById(R.id.toolbar);
         setSupportActionBar(mToolbar);
 
+        if (savedInstanceState == null) {
+            Fragment fragment = null;
+            Class fragmentClass = null;
+            fragmentClass = FeedFragment.class;
+            try {
+                fragment = (Fragment) fragmentClass.newInstance();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+            FragmentManager fragmentManager = getSupportFragmentManager();
+            fragmentManager.beginTransaction().replace(R.id.flContent, fragment).commit();
+        }
+
         mFloatingActionButton = findViewById(R.id.fab);
         mFloatingActionButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -62,93 +79,16 @@ public class MainActivity extends AppCompatActivity
 
         mDrawerLayout = findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
-                this, mDrawerLayout, mToolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+                this,
+                mDrawerLayout,
+                mToolbar,
+                R.string.navigation_drawer_open,
+                R.string.navigation_drawer_close);
         mDrawerLayout.addDrawerListener(toggle);
         toggle.syncState();
 
         mNavigationView = findViewById(R.id.nav_view);
         mNavigationView.setNavigationItemSelectedListener(this);
-
-        mRecyclerView = findViewById(R.id.recycler_view);
-
-        mPostList = new ArrayList<>();
-        mAdapter = new PostAdapter(this, mPostList);
-
-        RecyclerView.LayoutManager layoutManager = new GridLayoutManager(this, 1);
-        mRecyclerView.setLayoutManager(layoutManager);
-        mRecyclerView.addItemDecoration(new GridSpacingItemDecoration(
-                1,
-                dpToPx(10),
-                true));
-        mRecyclerView.setItemAnimator(new DefaultItemAnimator());
-        mRecyclerView.setAdapter(mAdapter);
-
-        getPosts();
-    }
-
-    /**
-     * Make a HTTP request to web server
-     */
-    private void getPosts() {
-//        String url = "http://10.0.2.2:8082/posts";
-        String url = "https://hidden-thicket-31298.herokuapp.com/posts";
-        OkHttpClient okHttpClient = new OkHttpClient();
-        Request request = new Request
-                .Builder()
-                .url(url)
-                .build();
-
-        okHttpClient.newCall(request).enqueue(new Callback() {
-            @Override
-            public void onFailure(Call call, IOException e) {
-                Log.i(TAG, "onFailure: " + e.getMessage());
-            }
-
-
-            @Override
-            public void onResponse(Call call, final Response response) throws IOException {
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        String postJson = null;
-
-                        try {
-                            postJson = response.body().string();
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
-
-                        Log.i(TAG, "onResonse: " + postJson);
-
-                        Post[] posts = new Gson().fromJson(postJson, Post[].class);
-
-                        System.out.println(posts[0].getCreatedAt());
-
-                        // for each post, instantiate new post and add into mPostList
-                        for (Post post : posts) {
-
-                            System.out.println("image_url: " + post.getImageUrl());
-                            System.out.println("user_url: " + post.getUser().getUserImage());
-
-                            Post newPost =
-                                    new Post(
-                                            post.getLocation(),
-                                            post.getDescription(),
-                                            post.getImageUrl(),
-                                            post.getCreatedAt(),
-                                            new User(
-                                                    post.getUser().getUsername(),
-                                                    post.getUser().getUserImage()
-                                            )
-                                    );
-                            mPostList.add(newPost);
-                        }
-
-                        mAdapter.notifyDataSetChanged();
-                    }
-                });
-            }
-        });
     }
 
     @Override
@@ -166,13 +106,11 @@ public class MainActivity extends AppCompatActivity
     public boolean onNavigationItemSelected(MenuItem item) {
         // Handle navigation view item clicks here.
         int id = item.getItemId();
+        Fragment fragment = null;
+        Class fragmentClass = null;
 
         if (id == R.id.nav_feed) {
-            // Handle the camera action
-            System.out.println("FEEDS --->");
-            Intent intent = new Intent(MainActivity.this, MainActivity.class);
-//            finish();
-            startActivity(intent);
+            fragmentClass = FeedFragment.class;
         } else if (id == R.id.nav_map) {
             System.out.println("MAPS --->");
 
@@ -184,21 +122,21 @@ public class MainActivity extends AppCompatActivity
             finish();
             startActivity(intent);
         }
+        try {
+            fragment = (Fragment) fragmentClass.newInstance();
+            FragmentManager fragmentManager = getSupportFragmentManager();
+            fragmentManager.beginTransaction().replace(R.id.flContent, fragment).commit();
+        } catch(Exception e) {
+            e.printStackTrace();
+        }
 
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
 
-    private int dpToPx(int dp) {
-        Resources r = getResources();
-
-        return Math.round(
-                TypedValue.applyDimension(
-                        TypedValue.COMPLEX_UNIT_DIP,
-                        dp,
-                        r.getDisplayMetrics())
-        );
+    @Override
+    public void onFragmentInteraction(Uri uri) {
 
     }
 }

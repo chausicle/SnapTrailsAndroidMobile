@@ -29,7 +29,6 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.MyViewHolder> 
 
         public MyViewHolder(View itemView) {
             super(itemView);
-            System.out.println("MyViewHolder in PostAdapter");
 
             userImage = itemView.findViewById(R.id.user_image);
             postImage = itemView.findViewById(R.id.post_image);
@@ -55,10 +54,8 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.MyViewHolder> 
 
     @Override
     public void onBindViewHolder(final MyViewHolder holder, int position) {
-        System.out.println("onBindViewHolder");
         Post post = mPostList.get(position);
         DateTimeUtils.setTimeZone("PST");
-
 
         if (post != null) {
             Picasso.get()
@@ -72,7 +69,6 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.MyViewHolder> 
         holder.location.setText(post.getLocation());
         holder.description.setText(post.getDescription());
         holder.username.setText(post.getUser().getUsername());
-        System.out.println(new Date());
         holder.createdAt.setText(DateTimeUtils.getTimeAgo(mContext, post.getCreatedAt()));
     }
 
