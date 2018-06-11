@@ -57,7 +57,7 @@ public class FeedFragment extends Fragment {
         mRecyclerView = view.findViewById(R.id.recycler_view);
 
         mPostList = new ArrayList<>();
-        mAdapter = new PostAdapter(getContext() , mPostList);
+        mAdapter = new PostAdapter(getContext(), mPostList);
 
         RecyclerView.LayoutManager layoutManager = new GridLayoutManager(getContext(), 1);
         mRecyclerView.setLayoutManager(layoutManager);

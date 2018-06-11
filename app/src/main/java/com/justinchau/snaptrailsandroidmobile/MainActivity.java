@@ -68,6 +68,9 @@ public class MainActivity extends AppCompatActivity
             fragmentManager.beginTransaction().replace(R.id.flContent, fragment).commit();
         }
 
+        String token = getIntent().getStringExtra("token");
+        System.out.println("TOKEN COMINGCOMINGCOMINGCOMINGCOMINGCOMINGCOMINGCOMING IN HOT" + token);
+
         mFloatingActionButton = findViewById(R.id.fab);
         mFloatingActionButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -126,7 +129,7 @@ public class MainActivity extends AppCompatActivity
             fragment = (Fragment) fragmentClass.newInstance();
             FragmentManager fragmentManager = getSupportFragmentManager();
             fragmentManager.beginTransaction().replace(R.id.flContent, fragment).commit();
-        } catch(Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
