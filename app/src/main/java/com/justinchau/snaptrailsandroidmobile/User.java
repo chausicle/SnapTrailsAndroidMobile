@@ -4,6 +4,7 @@ public class User {
 
     private String username;
     private String user_image;
+    private String email;
 
     public User(String username, String user_image) {
         this.username = username;
@@ -24,6 +25,14 @@ public class User {
 
     public void setUserImage(String user_image) {
         this.user_image = user_image;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
     }
 }
 

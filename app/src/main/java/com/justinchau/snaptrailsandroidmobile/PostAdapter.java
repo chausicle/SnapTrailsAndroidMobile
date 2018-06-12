@@ -30,11 +30,11 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.MyViewHolder> 
         public MyViewHolder(View itemView) {
             super(itemView);
 
-            userImage = itemView.findViewById(R.id.user_image);
+            userImage = itemView.findViewById(R.id.post_userImage);
             postImage = itemView.findViewById(R.id.post_image);
             location = itemView.findViewById(R.id.location);
             description = itemView.findViewById(R.id.description);
-            username = itemView.findViewById(R.id.username);
+            username = itemView.findViewById(R.id.post_username);
             createdAt = itemView.findViewById(R.id.created_at);
         }
     }

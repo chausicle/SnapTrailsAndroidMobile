@@ -77,10 +77,10 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
         // Set up the login form.
-        mUsername = findViewById(R.id.username);
+        mUsername = findViewById(R.id.login_username);
 //        populateAutoComplete();
 
-        mPasswordView = findViewById(R.id.password);
+        mPasswordView = findViewById(R.id.login_password);
         mPasswordView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView textView, int id, KeyEvent keyEvent) {
@@ -152,7 +152,6 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             // perform the user login attempt.
             showProgress(true);
             mAuthTask = new UserLoginTask(username, password);
-            System.out.println("ATTEMPTLOGIN: ENDING NOWWWWWWWWW");
             mAuthTask.execute((Void) null);
         }
     }
@@ -271,14 +270,27 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
         @Override
         protected Boolean doInBackground(Void... params) {
-//            String url = "http://10.0.2.2:8082/login";
-            String url = "https://hidden-thicket-31298.herokuapp.com/login";
-            final MediaType JSON = MediaType.parse("application/json; carset=utf-8");
 
             Login attemptLogin = new Login();
             attemptLogin.setUsername(mUsername);
             attemptLogin.setPassword(mPassword);
             String loginJson = new Gson().toJson(attemptLogin);
+
+            getLoginResponse(loginJson);
+
+            return status == 200;
+        }
+
+        @Override
+        protected void onCancelled() {
+            mAuthTask = null;
+            showProgress(false);
+        }
+
+        public void getLoginResponse(String loginJson) {
+            //            String url = "http://10.0.2.2:8082/login";
+            String url = "https://hidden-thicket-31298.herokuapp.com/login";
+            final MediaType JSON = MediaType.parse("application/json; carset=utf-8");
 
             OkHttpClient okHttpClient = new OkHttpClient();
             RequestBody formBody = RequestBody.create(JSON, loginJson);
@@ -301,18 +313,13 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-
                             token = response.header("Authorization");
                             status = response.code();
 
                             if (status == 200) {
 //                                mAuthTask.onPostExecute(true);
-                                mAuthTask = null;
-                                showProgress(false);
-                                Intent intent = new Intent(getBaseContext(), MainActivity.class);
-                                intent.putExtra("token", token);
-                                finish();
-                                startActivity(intent);
+                                getUserResponse();
+
                             } else {
 //                                mAuthTask.onPostExecute(false);
                                 mAuthTask = null;
@@ -324,14 +331,58 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                     });
                 }
             });
-
-            return status == 200;
         }
 
-        @Override
-        protected void onCancelled() {
-            mAuthTask = null;
-            showProgress(false);
+        public void getUserResponse() {
+            //            String url = "http://10.0.2.2:8082/login";
+            String url = "https://hidden-thicket-31298.herokuapp.com/users/" + mUsername + "/token";
+
+            OkHttpClient okHttpClient = new OkHttpClient();
+
+            Request request = new Request.Builder()
+                    .addHeader("Content-Type", "application/json")
+                    .addHeader("Accept", "application/json")
+                    .addHeader("Authorization", token)
+                    .url(url)
+                    .build();
+
+            okHttpClient.newCall(request).enqueue(new Callback() {
+                @Override
+                public void onFailure(Call call, IOException e) {
+                    Log.i(TAG, "onFailure: " + e.getMessage());
+                }
+
+                @Override
+                public void onResponse(Call call, final Response response) throws IOException {
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            String userJson = null;
+
+                            try {
+                                userJson = response.body().string();
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
+
+                            User loginUser = new Gson().fromJson(userJson, User.class);
+
+                            System.out.println("RESPONSE!!!!!!!!!!!!!!!  " + loginUser.getUserImage());
+                            System.out.println("RESPONSE!!!!!!!!!!!!!!!  " + loginUser.getUsername());
+                            System.out.println("RESPONSE!!!!!!!!!!!!!!!  " + loginUser.getEmail());
+
+                            mAuthTask = null;
+                            showProgress(false);
+                            Intent intent = new Intent(getBaseContext(), MainActivity.class);
+                            intent.putExtra("username", loginUser.getUsername());
+                            intent.putExtra("user_image", loginUser.getUserImage());
+                            intent.putExtra("email", loginUser.getEmail());
+                            finish();
+                            startActivity(intent);
+                        }
+                    });
+                }
+            });
         }
     }
 }

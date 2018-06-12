@@ -31,6 +31,9 @@ dependencies {
     implementation 'com.google.code.gson:gson:2.8.4'
     implementation 'com.squareup.picasso:picasso:2.71828'
     implementation 'com.github.thunder413:DateTimeUtils:1.0'
+    implementation 'com.auth0:java-jwt:3.3.0'
+    implementation 'com.auth0.android:jwtdecode:1.1.1'
+    implementation 'commons-codec:commons-codec:1.11'
 }
 
 allprojects {

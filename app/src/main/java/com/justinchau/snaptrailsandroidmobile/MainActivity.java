@@ -1,51 +1,41 @@
 package com.justinchau.snaptrailsandroidmobile;
 
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
 import android.content.Intent;
-import android.content.res.Resources;
+import android.media.Image;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
-import android.support.v7.widget.DefaultItemAnimator;
-import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.RecyclerView;
-import android.util.Log;
-import android.util.TypedValue;
-import android.view.View;
 import android.support.design.widget.NavigationView;
+import android.support.design.widget.Snackbar;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.ImageView;
+import android.widget.TextView;
 
-import com.google.gson.Gson;
+import com.auth0.android.jwt.JWT;
+import com.squareup.picasso.Picasso;
 
-import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
-
-import okhttp3.Call;
-import okhttp3.Callback;
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.Response;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, FeedFragment.OnFragmentInteractionListener {
 
     private static final String TAG = "MainActivity";
-    private RecyclerView mRecyclerView;
-    private PostAdapter mAdapter;
-    private List<Post> mPostList;
     private Toolbar mToolbar;
     private FloatingActionButton mFloatingActionButton;
     private DrawerLayout mDrawerLayout;
     private NavigationView mNavigationView;
+    private ImageView userImageView;
+    private TextView usernameTextView;
+    private TextView userEmailTextView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,8 +58,14 @@ public class MainActivity extends AppCompatActivity
             fragmentManager.beginTransaction().replace(R.id.flContent, fragment).commit();
         }
 
-        String token = getIntent().getStringExtra("token");
-        System.out.println("TOKEN COMINGCOMINGCOMINGCOMINGCOMINGCOMINGCOMINGCOMING IN HOT" + token);
+        String username = getIntent().getStringExtra("username");
+        String userImage = getIntent().getStringExtra("user_image");
+        String email = getIntent().getStringExtra("email");
+
+        System.out.println("MAINACTIVITY USERNAME " + username);
+        System.out.println("MAINACTIVITY USERIMAGE " + userImage);
+        System.out.println("MAINACTIVITY EMAIL " + email);
+
 
         mFloatingActionButton = findViewById(R.id.fab);
         mFloatingActionButton.setOnClickListener(new View.OnClickListener() {
@@ -92,6 +88,18 @@ public class MainActivity extends AppCompatActivity
 
         mNavigationView = findViewById(R.id.nav_view);
         mNavigationView.setNavigationItemSelectedListener(this);
+        View header = mNavigationView.getHeaderView(0);
+
+        userImageView = header.findViewById(R.id.nav_userImage);
+        usernameTextView = header.findViewById(R.id.nav_username);
+        userEmailTextView = header.findViewById(R.id.nav_userEmail);
+
+        usernameTextView.setText(username);
+        userEmailTextView.setText(email);
+        Picasso.get()
+                .load(userImage)
+                .transform(new CircleTransform(500, 0))
+                .into(userImageView);
     }
 
     @Override
