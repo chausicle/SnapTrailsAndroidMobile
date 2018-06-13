@@ -75,8 +75,9 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.MyViewHolder> 
                 Fragment fragment = null;
                 Class fragmentClass = MapsFragment.class;
                 Bundle bundle = new Bundle();
-                bundle.putFloat("latitude", (float) mPostList.get(position).getLatitude());
-                bundle.putFloat("longitude", (float) mPostList.get(position).getLongitude());
+                bundle.putString("getOne", "getOne");
+                bundle.putDouble("latitude", mPostList.get(position).getLatitude());
+                bundle.putDouble("longitude", mPostList.get(position).getLongitude());
                 bundle.putString("location", mPostList.get(position).getLocation());
 
                 try {

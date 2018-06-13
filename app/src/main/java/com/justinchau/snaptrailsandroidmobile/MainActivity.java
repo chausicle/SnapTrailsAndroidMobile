@@ -112,11 +112,13 @@ public class MainActivity extends AppCompatActivity
         int id = item.getItemId();
         Fragment fragment = null;
         Class fragmentClass = null;
+        Bundle bundle = new Bundle();
 
         if (id == R.id.nav_feed) {
             fragmentClass = FeedFragment.class;
         } else if (id == R.id.nav_map) {
             fragmentClass = MapsFragment.class;
+            bundle.putString("getAll", "getAll");
         } else if (id == R.id.nav_setting) {
             System.out.println("SETTINGS --->");
         } else if (id == R.id.nav_logout) {
@@ -126,6 +128,7 @@ public class MainActivity extends AppCompatActivity
         }
         try {
             fragment = (Fragment) fragmentClass.newInstance();
+            fragment.setArguments(bundle);
             FragmentManager fragmentManager = getSupportFragmentManager();
             fragmentManager.beginTransaction().replace(R.id.flContent, fragment).commit();
         } catch (Exception e) {
