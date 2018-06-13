@@ -1,7 +1,6 @@
 package com.justinchau.snaptrailsandroidmobile;
 
 import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
@@ -14,10 +13,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.github.thunder413.datetimeutils.DateTimeUtils;
-import com.google.android.gms.maps.SupportMapFragment;
 import com.squareup.picasso.Picasso;
 
-import java.util.Date;
 import java.util.List;
 
 public class PostAdapter extends RecyclerView.Adapter<PostAdapter.MyViewHolder> {
@@ -75,10 +72,6 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.MyViewHolder> 
         holder.postImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(mContext, MapsFragment.class);
-                intent.putExtra("latitude", mPostList.get(position).getLatitude());
-                intent.putExtra("longitude", mPostList.get(position).getLongitude());
-
                 Fragment fragment = null;
                 Class fragmentClass = MapsFragment.class;
                 Bundle bundle = new Bundle();
