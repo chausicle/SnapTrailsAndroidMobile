@@ -5,6 +5,8 @@ public class Post {
     private String description;
     private String image_url;
     private String created_at;
+    private double latitude;
+    private double longitude;
     private User user;
 
     public Post(
@@ -12,11 +14,15 @@ public class Post {
             String description,
             String image_url,
             String created_at,
+            double latitude,
+            double longitude,
             User user) {
         this.location = location;
         this.description = description;
         this.image_url = image_url;
         this.created_at = created_at;
+        this.latitude = latitude;
+        this.longitude = longitude;
         this.user = user;
     }
 
@@ -50,6 +56,22 @@ public class Post {
 
     public void setCreatedAt(String created_at) {
         this.created_at = created_at;
+    }
+
+    public double getLatitude() {
+        return latitude;
+    }
+
+    public void setLatitude(double latitude) {
+        this.latitude = latitude;
+    }
+
+    public double getLongitude() {
+        return longitude;
+    }
+
+    public void setLongitude(double longitude) {
+        this.longitude = longitude;
     }
 
     public User getUser() {

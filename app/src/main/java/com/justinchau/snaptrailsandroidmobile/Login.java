@@ -1,7 +1,5 @@
 package com.justinchau.snaptrailsandroidmobile;
 
-import okhttp3.Response;
-
 public class Login {
     private String username;
     private String password;
@@ -26,8 +24,4 @@ public class Login {
     public void setPassword(String password) {
         this.password = password;
     }
-
-//    public Response getResponse(String username, String password) {
-//
-//    }
 }

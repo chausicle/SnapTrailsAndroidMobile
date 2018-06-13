@@ -19,7 +19,6 @@ import android.view.ViewGroup;
 import com.google.gson.Gson;
 
 import java.io.IOException;
-import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -31,7 +30,7 @@ import okhttp3.Response;
 
 public class FeedFragment extends Fragment {
 
-    private static final String TAG = "MainActivity";
+    private static final String TAG = "FeedFragment";
     private RecyclerView mRecyclerView;
     private PostAdapter mAdapter;
     private List<Post> mPostList;
@@ -51,7 +50,7 @@ public class FeedFragment extends Fragment {
             @NonNull LayoutInflater inflater,
             @Nullable ViewGroup container,
             @Nullable Bundle savedInstanceState) {
-
+        Log.i(TAG, "onCreateView: start");
         View view = inflater.inflate(R.layout.feed_fragment, container, false);
 
         mRecyclerView = view.findViewById(R.id.recycler_view);
@@ -69,12 +68,13 @@ public class FeedFragment extends Fragment {
         mRecyclerView.setAdapter(mAdapter);
 
         getPosts();
-
+        Log.i(TAG, "onCreateView: end");
         return view;
     }
 
     @Override
     public void onAttach(Context context) {
+        Log.i(TAG, "onAttach: start");
         super.onAttach(context);
 
         if (context instanceof OnFragmentInteractionListener) {
@@ -83,12 +83,15 @@ public class FeedFragment extends Fragment {
             throw new RuntimeException(context.toString()
                     + " must implement OnFragmentInteractionListener");
         }
+        Log.i(TAG, "onAttach: end");
     }
 
     @Override
     public void onDetach() {
+        Log.i(TAG, "onDetach: start");
         super.onDetach();
         mListener = null;
+        Log.i(TAG, "onDetach: end");
     }
 
     /**
@@ -141,6 +144,8 @@ public class FeedFragment extends Fragment {
                                             post.getDescription(),
                                             post.getImageUrl(),
                                             post.getCreatedAt(),
+                                            post.getLatitude(),
+                                            post.getLongitude(),
                                             new User(
                                                     post.getUser().getUsername(),
                                                     post.getUser().getUserImage()

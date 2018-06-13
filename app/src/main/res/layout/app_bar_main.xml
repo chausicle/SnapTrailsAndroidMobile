@@ -36,7 +36,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|end"
-        android:layout_margin="@dimen/fab_margin"
+        android:layout_marginBottom="@dimen/fab_marginBottom"
+        android:layout_marginRight="@dimen/fab_marginRight"
+        app:layout_anchorGravity="right|end"
         app:srcCompat="@drawable/snaptrails" />
 
 </android.support.design.widget.CoordinatorLayout>

@@ -1,6 +1,11 @@
 package com.justinchau.snaptrailsandroidmobile;
 
 import android.content.Context;
+import android.content.Intent;
+import android.os.Bundle;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -9,6 +14,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.github.thunder413.datetimeutils.DateTimeUtils;
+import com.google.android.gms.maps.SupportMapFragment;
 import com.squareup.picasso.Picasso;
 
 import java.util.Date;
@@ -53,8 +59,8 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.MyViewHolder> 
     }
 
     @Override
-    public void onBindViewHolder(final MyViewHolder holder, int position) {
-        Post post = mPostList.get(position);
+    public void onBindViewHolder(final MyViewHolder holder, final int position) {
+        final Post post = mPostList.get(position);
         DateTimeUtils.setTimeZone("PST");
 
         if (post != null) {
@@ -66,10 +72,35 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.MyViewHolder> 
                     .load(post.getImageUrl())
                     .into(holder.postImage);
         }
+        holder.postImage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(mContext, MapsFragment.class);
+                intent.putExtra("latitude", mPostList.get(position).getLatitude());
+                intent.putExtra("longitude", mPostList.get(position).getLongitude());
+
+                Fragment fragment = null;
+                Class fragmentClass = MapsFragment.class;
+                Bundle bundle = new Bundle();
+                bundle.putFloat("latitude", (float) mPostList.get(position).getLatitude());
+                bundle.putFloat("longitude", (float) mPostList.get(position).getLongitude());
+                bundle.putString("location", mPostList.get(position).getLocation());
+
+                try {
+                    fragment = (Fragment) fragmentClass.newInstance();
+                    fragment.setArguments(bundle);
+                    FragmentManager fragmentManager = ((FragmentActivity)mContext).getSupportFragmentManager();
+                    fragmentManager.beginTransaction().replace(R.id.flContent, fragment).commit();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        });
         holder.location.setText(post.getLocation());
         holder.description.setText(post.getDescription());
         holder.username.setText(post.getUser().getUsername());
         holder.createdAt.setText(DateTimeUtils.getTimeAgo(mContext, post.getCreatedAt()));
+
     }
 
     @Override

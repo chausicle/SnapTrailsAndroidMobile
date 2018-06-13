@@ -21,12 +21,17 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.auth0.android.jwt.JWT;
+import com.google.android.gms.maps.MapFragment;
+import com.google.android.gms.maps.SupportMapFragment;
 import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener, FeedFragment.OnFragmentInteractionListener {
+        implements
+        NavigationView.OnNavigationItemSelectedListener,
+        FeedFragment.OnFragmentInteractionListener,
+        MapsFragment.OnFragmentInteractionListener {
 
     private static final String TAG = "MainActivity";
     private Toolbar mToolbar;
@@ -61,11 +66,6 @@ public class MainActivity extends AppCompatActivity
         String username = getIntent().getStringExtra("username");
         String userImage = getIntent().getStringExtra("user_image");
         String email = getIntent().getStringExtra("email");
-
-        System.out.println("MAINACTIVITY USERNAME " + username);
-        System.out.println("MAINACTIVITY USERIMAGE " + userImage);
-        System.out.println("MAINACTIVITY EMAIL " + email);
-
 
         mFloatingActionButton = findViewById(R.id.fab);
         mFloatingActionButton.setOnClickListener(new View.OnClickListener() {
@@ -123,12 +123,10 @@ public class MainActivity extends AppCompatActivity
         if (id == R.id.nav_feed) {
             fragmentClass = FeedFragment.class;
         } else if (id == R.id.nav_map) {
-            System.out.println("MAPS --->");
-
+            fragmentClass = MapsFragment.class;
         } else if (id == R.id.nav_setting) {
             System.out.println("SETTINGS --->");
         } else if (id == R.id.nav_logout) {
-            System.out.println("LOGOUT --->");
             Intent intent = new Intent(MainActivity.this, LoginActivity.class);
             finish();
             startActivity(intent);

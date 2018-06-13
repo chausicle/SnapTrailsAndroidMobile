@@ -76,10 +76,8 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
-        // Set up the login form.
-        mUsername = findViewById(R.id.login_username);
-//        populateAutoComplete();
 
+        mUsername = findViewById(R.id.login_username);
         mPasswordView = findViewById(R.id.login_password);
         mPasswordView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
@@ -334,7 +332,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         }
 
         public void getUserResponse() {
-            //            String url = "http://10.0.2.2:8082/login";
+            //            String url = "http://10.0.2.2:8082/users/" + mUsername + "/token";
             String url = "https://hidden-thicket-31298.herokuapp.com/users/" + mUsername + "/token";
 
             OkHttpClient okHttpClient = new OkHttpClient();
@@ -366,10 +364,6 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                             }
 
                             User loginUser = new Gson().fromJson(userJson, User.class);
-
-                            System.out.println("RESPONSE!!!!!!!!!!!!!!!  " + loginUser.getUserImage());
-                            System.out.println("RESPONSE!!!!!!!!!!!!!!!  " + loginUser.getUsername());
-                            System.out.println("RESPONSE!!!!!!!!!!!!!!!  " + loginUser.getEmail());
 
                             mAuthTask = null;
                             showProgress(false);
